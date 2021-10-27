@@ -1,5 +1,5 @@
 {
-  "name": "XDIntlAccount",
+  "name": "XD.Intl.Account",
   "references": [
     "XD.Intl.Common"
   ],
