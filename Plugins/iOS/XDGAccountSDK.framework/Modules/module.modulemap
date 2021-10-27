@@ -1,0 +1,6 @@
+framework module XDGAccountSDK {
+  umbrella header "XDGAccountSDK.h"
+
+  export *
+  module * { export * }
+}

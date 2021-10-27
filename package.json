@@ -1,0 +1,10 @@
+{
+  "name": "com.xd.intl.account",
+  "version": "6.0.0",
+  "description": "XD-Intl Account",
+  "unity": "2018.3",
+  "license": "MIT",
+  "dependencies": {
+    "com.xd.intl.common": "https://github.com/suguiming/XDGCommon.git#6.0.0"
+  }
+}
