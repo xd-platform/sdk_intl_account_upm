@@ -60,7 +60,7 @@ namespace XD.Intl.Account
                
             }
             catch (Exception e){
-                XDGTool.LogError("Login 报错");
+                XDGTool.LogError("Login 报错" + e.Message);
                 Console.WriteLine(e);
             }
         }
