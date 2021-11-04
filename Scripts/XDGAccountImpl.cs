@@ -166,6 +166,8 @@ namespace XD.Intl.Account
                 }
 
                 callback(wrapper.user);
+                
+                ActiveLearnCloudToken();
             });
         }
     }
