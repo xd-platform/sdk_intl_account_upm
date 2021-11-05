@@ -3,14 +3,14 @@
 ## 1.在Packages/manifest.json中加入如下引用
 account依赖[common](https://github.com/suguiming/XDGCommon), common依赖其他六个。
 ```
-"com.xd.intl.account": "https://github.com/suguiming/XDGAccount.git#6.0.0",
-"com.xd.intl.common": "https://github.com/suguiming/XDGCommon.git#6.0.0",
-"com.leancloud.realtime": "https://github.com/leancloud/csharp-sdk-upm.git#realtime-0.9.2",
-"com.leancloud.storage": "https://github.com/leancloud/csharp-sdk-upm.git#storage-0.9.2",
-"com.taptap.tds.bootstrap": "https://github.com/TapTap/TapBootstrap-Unity.git#3.1.0",
-"com.taptap.tds.common": "https://github.com/TapTap/TapCommon-Unity.git#3.1.0",
-"com.taptap.tds.login": "https://github.com/TapTap/TapLogin-Unity.git#3.1.0",
-"com.taptap.tds.tapdb": "https://github.com/TapTap/TapDB-Unity.git#3.1.0",
+"com.xd.intl.account": "https://github.com/suguiming/XDGAccount.git#{version}",
+"com.xd.intl.common": "https://github.com/suguiming/XDGCommon.git#{version}",
+"com.leancloud.realtime": "https://github.com/leancloud/csharp-sdk-upm.git#realtime-{version}",
+"com.leancloud.storage": "https://github.com/leancloud/csharp-sdk-upm.git#storage-{version}",
+"com.taptap.tds.bootstrap": "https://github.com/TapTap/TapBootstrap-Unity.git#{version}",
+"com.taptap.tds.common": "https://github.com/TapTap/TapCommon-Unity.git#{version}",
+"com.taptap.tds.login": "https://github.com/TapTap/TapLogin-Unity.git#{version}",
+"com.taptap.tds.tapdb": "https://github.com/TapTap/TapDB-Unity.git#{version}",
 ```
 
 依赖的仓库地址
