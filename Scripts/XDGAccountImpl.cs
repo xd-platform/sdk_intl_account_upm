@@ -58,6 +58,7 @@ namespace XD.Intl.Account
                 }
                 catch (Exception e)
                 {
+                    errorCallback(new XDGError(result.code, result.message));
                     XDGTool.LogError("Login 报错" + e.Message);
                     Console.WriteLine(e);
                 }

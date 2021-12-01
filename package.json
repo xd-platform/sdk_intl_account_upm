@@ -1,10 +1,10 @@
 {
   "name": "com.xd.intl.account",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "XD-Intl Account",
   "unity": "2018.3",
   "license": "MIT",
   "dependencies": {
-    "com.xd.intl.common": "https://github.com/xd-platform/sdk_intl_common_upm.git#6.0.0"
+    "com.xd.intl.common": "https://github.com/xd-platform/sdk_intl_common_upm.git#6.0.1"
   }
 }
