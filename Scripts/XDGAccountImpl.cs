@@ -52,10 +52,8 @@ namespace XD.Intl.Account
                         errorCallback(userWrapper.error);
                         return;
                     }
-
-                    callback(userWrapper.user);
-
-                    ActiveLearnCloudToken();
+                    ActiveLearnCloudToken(userWrapper.user, callback, errorCallback);
+                    
                     XDGTool.Log("login block end");
                 }
                 catch (Exception e)
@@ -66,7 +64,7 @@ namespace XD.Intl.Account
             });
         }
 
-        private void ActiveLearnCloudToken()
+        private void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback)
         {
             XDGTool.Log("LoginSync 开始执行  ActiveLearnCloudToken");
             var command = new Command(XDG_ACCOUNT_SERVICE, "loginSync", true, null);
@@ -77,16 +75,20 @@ namespace XD.Intl.Account
                     XDGTool.Log("LoginSync 方法结果: " + result.ToJSON());
                     if (!XDGTool.checkResultSuccess(result))
                     {
+                        errorCallback(new XDGError(result.code, result.message));
                         return;
                     }
 
                     var contentDic = Json.Deserialize(result.content) as Dictionary<string, object>;
                     var token = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
                     await TDSUser.BecomeWithSessionToken(token);
+                    callback(user);
+                    
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
                 }
                 catch (Exception e)
                 {
+                    errorCallback(new XDGError(result.code, result.message));
                     XDGTool.LogError("LoginSync 报错：" + e.Message);
                     Console.WriteLine(e);
                 }
@@ -171,10 +173,7 @@ namespace XD.Intl.Account
                     errorCallback(wrapper.error);
                     return;
                 }
-
-                callback(wrapper.user);
-
-                ActiveLearnCloudToken();
+                ActiveLearnCloudToken(wrapper.user, callback, errorCallback);
             });
         }
     }
