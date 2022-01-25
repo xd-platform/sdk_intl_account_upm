@@ -177,5 +177,13 @@ namespace XD.Intl.Account
                 ActiveLearnCloudToken(wrapper.user, callback, errorCallback);
             });
         }
+
+        public void AccountCancellation(){ //iOS有，安卓没有
+#if UNITY_IOS
+            var command = new Command(XDG_ACCOUNT_SERVICE, "accountCancellation", false, null);
+            EngineBridge.GetInstance().CallHandler(command); 
+#endif
+        }
+        
     }
 }

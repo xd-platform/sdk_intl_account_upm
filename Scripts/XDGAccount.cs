@@ -35,5 +35,9 @@ namespace XD.Intl.Account
             XDGAccountImpl.GetInstance().LoginByType(loginType, callback, errorCallback);
         }
 
+        public static void AccountCancellation(){
+            XDGAccountImpl.GetInstance().AccountCancellation();
+        }
+
     }
 }

@@ -54,6 +54,9 @@ typedef void (^XDGUserStatusChangeCallback)(XDGUserStateChangeCode userStateChan
  */
 + (void)loginByType:(LoginEntryType)loginType loginHandler:(XDGLoginManagerRequestCallback)handler;
 
+//user accountCancellation
++ (void)accountCancellation;
+
 @end
 
 NS_ASSUME_NONNULL_END
