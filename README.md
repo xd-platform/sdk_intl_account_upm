@@ -98,3 +98,7 @@ XDGCommon.SetLanguage(LangType.ZH_CN);
 ```
   XDGAccount.Logout();
 ```
+#### 账户注销(仅iOS)
+```
+XDGAccount.AccountCancellation();
+```
