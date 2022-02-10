@@ -67,6 +67,7 @@ namespace XD.Intl.Account
 
         private void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback)
         {
+            XDGCommon.ShowLoading();
             XDGTool.Log("LoginSync 开始执行  ActiveLearnCloudToken");
             var resultJson = "空";
             var command = new Command(XDG_ACCOUNT_SERVICE, "loginSync", true, null);
@@ -77,6 +78,7 @@ namespace XD.Intl.Account
                     XDGTool.Log("LoginSync 方法结果: " + resultJson);
                     if (!XDGTool.checkResultSuccess(result))
                     {
+                        XDGCommon.HideLoading();
                         errorCallback(new XDGError(result.code, result.message));
                         return;
                     }
@@ -85,11 +87,13 @@ namespace XD.Intl.Account
                     var token = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
                     await TDSUser.BecomeWithSessionToken(token);
                     callback(user);
+                    XDGCommon.HideLoading();
                     
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
                 }
                 catch (Exception e)
                 {
+                    XDGCommon.HideLoading();
                     errorCallback(new XDGError(result.code, result.message));
                     XDGTool.LogError("LoginSync 报错：" + e.Message + "。 【result结果：" + resultJson + "】");
                     Console.WriteLine(e);
