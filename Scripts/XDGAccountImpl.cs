@@ -67,6 +67,10 @@ namespace XD.Intl.Account
 
         private void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback)
         {
+            if (user != null){
+                XDGTool.userId = user.userId; //日志打印用
+            }
+            
             XDGCommon.ShowLoading();
             XDGTool.Log("LoginSync 开始执行  ActiveLearnCloudToken");
             var resultJson = "空";
@@ -108,7 +112,7 @@ namespace XD.Intl.Account
                 }
             }));
         }
-
+        
         public void Logout()
         {
             var command = new Command(XDG_ACCOUNT_SERVICE, "logout", false, null);
