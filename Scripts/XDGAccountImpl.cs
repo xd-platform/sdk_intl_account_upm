@@ -80,8 +80,7 @@ namespace XD.Intl.Account
                 try{
                     resultJson = result.ToJSON();
                     XDGTool.Log("LoginSync 方法结果: " + resultJson);
-                    if (!XDGTool.checkResultSuccess(result))
-                    {
+                    if (!XDGTool.checkResultSuccess(result)){
                         XDGCommon.HideLoading();
                         errorCallback(new XDGError(result.code, result.message));
                         return;
@@ -89,8 +88,16 @@ namespace XD.Intl.Account
 
                     var contentDic = Json.Deserialize(result.content) as Dictionary<string, object>;
                     var token = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
+                    var errorDic = SafeDictionary.GetValue<Dictionary<string, object>>(contentDic, "error");
 
-                    if (XDGTool.IsEmpty(token)){
+                    if (errorDic != null){ //接口失败
+                        XDGCommon.HideLoading();
+                        errorCallback(new XDGError(errorDic));
+                        XDGTool.LogError("LoginSync 报错：接口失败， 【result结果：" + resultJson + "】");
+                        return;
+                    }
+
+                    if (XDGTool.IsEmpty(token)){//接口成功，token是空(不太可能吧)
                         XDGCommon.HideLoading();
                         errorCallback(new XDGError(result.code, result.message));
                         XDGTool.LogError("LoginSync 报错：token 是空！ 【result结果：" + resultJson + "】");
