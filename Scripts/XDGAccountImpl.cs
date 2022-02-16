@@ -93,7 +93,7 @@ namespace XD.Intl.Account
                     if (errorDic != null){ //接口失败
                         XDGCommon.HideLoading();
                         errorCallback(new XDGError(errorDic));
-                        XDGTool.LogError("LoginSync 报错：接口失败， 【result结果：" + resultJson + "】");
+                        XDGTool.LogError("LoginSync 报错：请求sessionToken接口失败， 【result结果：" + resultJson + "】");
                         return;
                     }
 
@@ -107,14 +107,16 @@ namespace XD.Intl.Account
                     await TDSUser.BecomeWithSessionToken(token);
                     callback(user);
                     XDGCommon.HideLoading();
-                    
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
-                }
-                catch (Exception e)
-                {
+                    
+                } catch (Exception e){
                     XDGCommon.HideLoading();
                     errorCallback(new XDGError(result.code, result.message));
-                    XDGTool.LogError("LoginSync 报错：" + e.Message + "。 【result结果：" + resultJson + "】");
+                    if (e.InnerException != null){
+                        XDGTool.LogError("LoginSync 报错：" + e.Message + e.StackTrace + "【InnerException： " +e.InnerException.Message + e.InnerException.StackTrace+ "】" +"。 【result结果：" + resultJson + "】");
+                    } else{
+                        XDGTool.LogError("LoginSync 报错：" + e.Message + e.StackTrace + "。 【result结果：" + resultJson + "】");   
+                    }
                     Console.WriteLine(e);
                 }
             }));
