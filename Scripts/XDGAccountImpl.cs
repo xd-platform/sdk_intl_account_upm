@@ -66,10 +66,25 @@ namespace XD.Intl.Account
             });
         }
 
-        private void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback)
-        {
-            if (user != null){
+        private async void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback){
+            if (user == null || XDGTool.IsEmpty(user.userId)){
+                errorCallback(new XDGError(-1001, "user is null"));
+                XDGTool.LogError("LoginSync 报错：user 是空！");
+                return;
+            } else{
                 XDGTool.userId = user.userId; //日志打印用
+            }
+
+            TDSUser preUser = await TDSUser.GetCurrent();
+            if (preUser != null){
+                if (preUser.ObjectId == user.userId) {
+                    XDGTool.Log("LoginSync 使用local pre user");
+                    callback(user);
+                    return;
+                } else{
+                    // id 不同可能是有残存的数据，则清空后走重新创建逻辑
+                    await TDSUser.Logout();   
+                }
             }
             
             XDGCommon.ShowLoading();
@@ -105,18 +120,10 @@ namespace XD.Intl.Account
                         return;
                     }
 
-                    if (user == null || XDGTool.IsEmpty(user.userId)){ //用户是空
-                        XDGCommon.HideLoading();
-                        errorCallback(new XDGError(-1001, "user is null"));
-                        XDGTool.LogError("LoginSync 报错：user 是空！ 【result结果：" + resultJson + "】");
-                        return;
-                    }
-
-                    // await TDSUser.BecomeWithSessionToken(token);  //不走网络，用本地构建!
                     LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, user.userId) as LCUser;
                     lcUser.SessionToken = sessionToken;
-                    await lcUser.SaveToLocal();
-                    
+                    await lcUser.SaveToLocal(); 
+                        
                     callback(user);
                     XDGCommon.HideLoading();
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
@@ -134,11 +141,11 @@ namespace XD.Intl.Account
             }));
         }
         
-        public void Logout()
+        public async void Logout()
         {
+            await TDSUser.Logout(); //退出LC
             var command = new Command(XDG_ACCOUNT_SERVICE, "logout", false, null);
             EngineBridge.GetInstance().CallHandler(command);
-            TDSUser.Logout(); //退出LC
         }
 
         public void AddUserStatusChangeCallback(Action<int, string> callback)
