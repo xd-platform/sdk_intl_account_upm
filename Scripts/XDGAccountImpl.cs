@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LeanCloud.Storage;
 using TapTap.Bootstrap;
 using TapTap.Common;
 using XD.Intl.Common;
@@ -87,7 +88,7 @@ namespace XD.Intl.Account
                     }
 
                     var contentDic = Json.Deserialize(result.content) as Dictionary<string, object>;
-                    var token = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
+                    var sessionToken = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
                     var errorDic = SafeDictionary.GetValue<Dictionary<string, object>>(contentDic, "error");
 
                     if (errorDic != null){ //接口失败
@@ -97,14 +98,25 @@ namespace XD.Intl.Account
                         return;
                     }
 
-                    if (XDGTool.IsEmpty(token)){//接口成功，token是空(不太可能吧)
+                    if (XDGTool.IsEmpty(sessionToken)){//接口成功，token是空(不太可能吧)
                         XDGCommon.HideLoading();
-                        errorCallback(new XDGError(result.code, result.message));
+                        errorCallback(new XDGError(-1000, "sessionToken is null"));
                         XDGTool.LogError("LoginSync 报错：token 是空！ 【result结果：" + resultJson + "】");
                         return;
                     }
+
+                    if (user == null || XDGTool.IsEmpty(user.userId)){ //用户是空
+                        XDGCommon.HideLoading();
+                        errorCallback(new XDGError(-1001, "user is null"));
+                        XDGTool.LogError("LoginSync 报错：user 是空！ 【result结果：" + resultJson + "】");
+                        return;
+                    }
+
+                    // await TDSUser.BecomeWithSessionToken(token);  //不走网络，用本地构建!
+                    LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, user.userId) as LCUser;
+                    lcUser.SessionToken = sessionToken;
+                    await lcUser.SaveToLocal();
                     
-                    await TDSUser.BecomeWithSessionToken(token);
                     callback(user);
                     XDGCommon.HideLoading();
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
