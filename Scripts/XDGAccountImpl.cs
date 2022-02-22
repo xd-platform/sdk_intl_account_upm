@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LeanCloud.Storage;
 using TapTap.Bootstrap;
 using TapTap.Common;
 using XD.Intl.Common;
@@ -65,32 +66,76 @@ namespace XD.Intl.Account
             });
         }
 
-        private void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback)
-        {
+        private async void ActiveLearnCloudToken(XDGUser user, Action<XDGUser> callback, Action<XDGError> errorCallback){
+            if (user == null || XDGTool.IsEmpty(user.userId)){
+                errorCallback(new XDGError(-1001, "user is null"));
+                XDGTool.LogError("LoginSync 报错：user 是空！");
+                return;
+            } else{
+                XDGTool.userId = user.userId; //日志打印用
+            }
+
+            TDSUser preUser = await TDSUser.GetCurrent();
+            if (preUser != null){
+                if (preUser.ObjectId == user.userId) {
+                    XDGTool.Log("LoginSync 使用local pre user");
+                    callback(user);
+                    return;
+                } else{
+                    // id 不同可能是有残存的数据，则清空后走重新创建逻辑
+                    await TDSUser.Logout();   
+                }
+            }
+            
+            XDGCommon.ShowLoading();
             XDGTool.Log("LoginSync 开始执行  ActiveLearnCloudToken");
+            var resultJson = "空";
             var command = new Command(XDG_ACCOUNT_SERVICE, "loginSync", true, null);
             EngineBridge.GetInstance().CallHandler(command, (async result =>
             {
-                try
-                {
-                    XDGTool.Log("LoginSync 方法结果: " + result.ToJSON());
-                    if (!XDGTool.checkResultSuccess(result))
-                    {
+                try{
+                    resultJson = result.ToJSON();
+                    XDGTool.Log("LoginSync 方法结果: " + resultJson);
+                    if (!XDGTool.checkResultSuccess(result)){
+                        XDGCommon.HideLoading();
                         errorCallback(new XDGError(result.code, result.message));
                         return;
                     }
 
                     var contentDic = Json.Deserialize(result.content) as Dictionary<string, object>;
-                    var token = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
-                    await TDSUser.BecomeWithSessionToken(token);
+                    var sessionToken = SafeDictionary.GetValue<string>(contentDic, "sessionToken");
+                    var errorDic = SafeDictionary.GetValue<Dictionary<string, object>>(contentDic, "error");
+
+                    if (errorDic != null){ //接口失败
+                        XDGCommon.HideLoading();
+                        errorCallback(new XDGError(errorDic));
+                        XDGTool.LogError("LoginSync 报错：请求sessionToken接口失败， 【result结果：" + resultJson + "】");
+                        return;
+                    }
+
+                    if (XDGTool.IsEmpty(sessionToken)){//接口成功，token是空(不太可能吧)
+                        XDGCommon.HideLoading();
+                        errorCallback(new XDGError(-1000, "sessionToken is null"));
+                        XDGTool.LogError("LoginSync 报错：token 是空！ 【result结果：" + resultJson + "】");
+                        return;
+                    }
+
+                    LCUser lcUser = LCObject.CreateWithoutData(LCUser.CLASS_NAME, user.userId) as LCUser;
+                    lcUser.SessionToken = sessionToken;
+                    await lcUser.SaveToLocal(); 
+                        
                     callback(user);
-                    
+                    XDGCommon.HideLoading();
                     XDGTool.Log("LoginSync  BecomeWithSessionToken 执行完毕");
-                }
-                catch (Exception e)
-                {
+                    
+                } catch (Exception e){
+                    XDGCommon.HideLoading();
                     errorCallback(new XDGError(result.code, result.message));
-                    XDGTool.LogError("LoginSync 报错：" + e.Message);
+                    if (e.InnerException != null){
+                        XDGTool.LogError("LoginSync 报错：" + e.Message + e.StackTrace + "【InnerException： " +e.InnerException.Message + e.InnerException.StackTrace+ "】" +"。 【result结果：" + resultJson + "】");
+                    } else{
+                        XDGTool.LogError("LoginSync 报错：" + e.Message + e.StackTrace + "。 【result结果：" + resultJson + "】");   
+                    }
                     Console.WriteLine(e);
                 }
             }));
