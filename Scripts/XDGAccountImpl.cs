@@ -141,11 +141,11 @@ namespace XD.Intl.Account
             }));
         }
 
-        public void Logout()
+        public async void Logout()
         {
+            await TDSUser.Logout(); //退出LC
             var command = new Command(XDG_ACCOUNT_SERVICE, "logout", false, null);
             EngineBridge.GetInstance().CallHandler(command);
-            TDSUser.Logout(); //退出LC
         }
 
         public void AddUserStatusChangeCallback(Action<int, string> callback)
