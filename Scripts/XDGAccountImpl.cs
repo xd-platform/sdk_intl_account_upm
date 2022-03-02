@@ -140,7 +140,8 @@ namespace XD.Intl.Account
                 }
             }));
         }
-        
+
+
         public async void Logout()
         {
             await TDSUser.Logout(); //退出LC
