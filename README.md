@@ -1,19 +1,34 @@
-# XD-Intl Account使用： 参考[Unity-demo](https://github.com/suguiming/Unity-demo)
-
+# XD-Intl
 ## 1.在Packages/manifest.json中加入如下引用
-account依赖[common](https://github.com/suguiming/XDGCommon), common依赖其他六个。
 ```
-"com.xd.intl.account": "https://github.com/suguiming/XDGAccount.git#{version}",
-"com.xd.intl.common": "https://github.com/suguiming/XDGCommon.git#{version}",
-"com.leancloud.realtime": "https://github.com/leancloud/csharp-sdk-upm.git#realtime-{version}",
-"com.leancloud.storage": "https://github.com/leancloud/csharp-sdk-upm.git#storage-{version}",
-"com.taptap.tds.bootstrap": "https://github.com/TapTap/TapBootstrap-Unity.git#{version}",
-"com.taptap.tds.common": "https://github.com/TapTap/TapCommon-Unity.git#{version}",
-"com.taptap.tds.login": "https://github.com/TapTap/TapLogin-Unity.git#{version}",
-"com.taptap.tds.tapdb": "https://github.com/TapTap/TapDB-Unity.git#{version}",
+   "com.leancloud.realtime": "https://github.com/leancloud/csharp-sdk-upm.git#realtime-0.10.2",
+    "com.leancloud.storage": "https://github.com/leancloud/csharp-sdk-upm.git#storage-0.10.2",
+    "com.taptap.tds.bootstrap": "https://github.com/TapTap/TapBootstrap-Unity.git#3.6.1",
+    "com.taptap.tds.common": "https://github.com/TapTap/TapCommon-Unity.git#3.6.1",
+    "com.taptap.tds.login": "https://github.com/TapTap/TapLogin-Unity.git#3.6.1",
+    "com.taptap.tds.tapdb": "https://github.com/TapTap/TapDB-Unity.git#3.6.1",
+    "com.xd.intl.common": "https://github.com/xd-platform/sdk_intl_common_upm.git#6.1.1",
+    "com.xd.intl.account": "https://github.com/xd-platform/sdk_intl_account_upm.git#6.1.1",
+    "com.xd.intl.payment": "https://github.com/xd-platform/sdk_intl_payment_upm.git#6.1.1",
+    
+    "scopedRegistries": [
+    {
+      "name": "XD Intl SDK",
+      "url": "http://npm.xindong.com",
+      "scopes": [
+        "com.xd.intl"
+      ]
+    },
+    {
+      "name": "Game Package Registry by Google",
+      "url": "https://unityregistry-pa.googleapis.com",
+      "scopes": [
+        "com.google"
+      ]
+    }
+  ]
 ```
-
-依赖的仓库地址
+(依赖的仓库地址)
 * [TapTap.Common](https://github.com/TapTap/TapCommon-Unity.git)
 * [TapTap.Bootstrap](https://github.com/TapTap/TapBootstrap-Unity.git)
 * [TapTap.Login](https://github.com/TapTap/TapLogin-Unity.git)
