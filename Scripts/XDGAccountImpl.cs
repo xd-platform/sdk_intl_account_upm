@@ -43,6 +43,7 @@ namespace XD.Intl.Account
                     XDGTool.Log("Login 方法结果: " + result.ToJSON());
                     if (!XDGTool.checkResultSuccess(result))
                     {
+                        XDGTool.LogError($"Login 登录失败1：code:{result.code}  msg:{result.message}");
                         errorCallback(new XDGError(result.code, result.message));
                         return;
                     }
@@ -50,6 +51,7 @@ namespace XD.Intl.Account
                     var userWrapper = new XDGUserWrapper(result.content);
                     if (userWrapper.error != null)
                     {
+                        XDGTool.LogError($"Login 登录失败2 code:{userWrapper.error.code}  msg:{userWrapper.error.error_msg}");
                         errorCallback(userWrapper.error);
                         return;
                     }
@@ -210,6 +212,7 @@ namespace XD.Intl.Account
                 XDGTool.Log("LoginByType 方法结果: " + result.ToJSON());
                 if (!XDGTool.checkResultSuccess(result))
                 {
+                    XDGTool.LogError($"LoginByType 登录失败1：code:{result.code}  msg:{result.message}");
                     errorCallback(new XDGError(result.code, result.message));
                     return;
                 }
@@ -217,6 +220,7 @@ namespace XD.Intl.Account
                 XDGUserWrapper wrapper = new XDGUserWrapper(result.content);
                 if (wrapper.error != null)
                 {
+                    XDGTool.LogError($"LoginByType 登录失败2：code:{wrapper.error.code}  msg:{wrapper.error.error_msg}");
                     errorCallback(wrapper.error);
                     return;
                 }
