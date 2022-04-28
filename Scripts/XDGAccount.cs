@@ -7,8 +7,26 @@ namespace XD.Intl.Account
     {
         public static void Login(Action<XDGUser> callback, Action<XDGError> errorCallback)
         {
-            XDGAccountImpl.GetInstance().Login(callback, errorCallback);
+            XDGAccountImpl.GetInstance().Login((u) => {
+                callback(u);
+                EventManager.LoginSuccessEvent();
+            }, (e) => {
+                errorCallback(e);
+                EventManager.LoginFailEvent(e.error_msg);
+            });
         }
+        
+        public static void LoginByType(LoginType loginType, Action<XDGUser> callback, Action<XDGError> errorCallback)
+        {
+            XDGAccountImpl.GetInstance().LoginByType(loginType, (u) => {
+                callback(u);
+                EventManager.LoginSuccessEvent();
+            }, (e) => {
+                errorCallback(e);
+                EventManager.LoginFailEvent(e.error_msg);
+            });
+        }
+
 
         public static void Logout()
         {
@@ -29,12 +47,7 @@ namespace XD.Intl.Account
         {
             XDGAccountImpl.GetInstance().OpenUserCenter();
         }
-
-        public static void LoginByType(LoginType loginType, Action<XDGUser> callback, Action<XDGError> errorCallback)
-        {
-            XDGAccountImpl.GetInstance().LoginByType(loginType, callback, errorCallback);
-        }
-
+        
         public static void AccountCancellation(){
             XDGAccountImpl.GetInstance().AccountCancellation();
         }
