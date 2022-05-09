@@ -85,7 +85,7 @@ namespace XD.Intl.Account
                     return;
                 } else{
                     // id 不同可能是有残存的数据，则清空后走重新创建逻辑
-                    await TDSUser.Logout();   
+                    await LCUser.Logout();   
                 }
             }
             
@@ -164,6 +164,9 @@ namespace XD.Intl.Account
                 }
 
                 XDGUserStatusChangeWrapper wrapper = new XDGUserStatusChangeWrapper(result.content);
+                if (wrapper.code == XDGUserStatusCode.LOGOUT){
+                    TDSUser.Logout();
+                }
                 callback(wrapper.code, wrapper.message);
             });
         }
